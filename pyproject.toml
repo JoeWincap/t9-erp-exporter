@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "t9-erp-exporter"
+version = "0.1.0"
+description = "T9 ERP Excel 匯入檔自動化生成工具"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "xlsxwriter>=3.0.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/your-username/t9-erp-exporter"
