@@ -22,22 +22,32 @@ class T9PureTemplate:
         }
 
     @classmethod
-    def write_sheet(cls, ws, title, notes, headers, rows, styles):
+    def _write_sheet(cls, ws, title, notes, headers, rows, styles):
+        """通用工作表繪製器：負責固定格式的表頭與動態資料列寫入"""
         col_count = len(headers)
-
+        
+        # 1. 標題區 (Row 0 ~ 1)
         ws.merge_range(0, 0, 0, col_count - 1, "", styles["title"])
         ws.merge_range(1, 0, 1, col_count - 1, title, styles["title"])
-
-        for c, v in enumerate(notes):
+        
+        # 2. 備註與欄位名稱 (Row 2 ~ 3)
+        for c, v in enumerate(notes): 
             ws.write(2, c, v, styles["note"])
-        for c, v in enumerate(headers):
+        for c, v in enumerate(headers): 
             ws.write(3, c, v, styles["header"])
 
+        # 3. 資料列 (Row 4 起)
         for r_idx, row in enumerate(rows, start=4):
+            # -------------------------------------------------------------
+            # ★ 位置 1：欄位長度防呆 (防未來自己寫業務腳本時漏拼欄位)
+            # -------------------------------------------------------------
             if len(row) != col_count:
-                raise ValueError(f"[{title}] 第 {r_idx + 1} 列長度不符！預期 {col_count} 欄，實際 {len(row)} 欄。")
+                raise ValueError(f"[{title}] 第 {r_idx + 1} 列欄位數量錯誤！預期 {col_count} 欄，實際傳入 {len(row)} 欄。資料內容：{row}")
 
             for c_idx, val in enumerate(row):
+                # -------------------------------------------------------------
+                # ★ 位置 2：自動處理 None、去除空白與抹除隱形 .0
+                # -------------------------------------------------------------
                 if isinstance(val, float):
                     fmt = styles["num"]
                     clean_val = val
@@ -46,7 +56,11 @@ class T9PureTemplate:
                     clean_val = val
                 else:
                     fmt = styles["text"]
-                    clean_val = "" if val is None else str(val)
+                    if val is None:
+                        clean_val = ""
+                    else:
+                        # 自動脫水 + 將結尾的 .0 斬草除根
+                        clean_val = re.sub(r'\.0$', '', str(val).strip())
 
                 ws.write(r_idx, c_idx, clean_val, fmt)
 
