@@ -1,5 +1,6 @@
 import os
 import xlsxwriter
+import re
 from . import specs
 
 class T9PureTemplate:
@@ -74,10 +75,10 @@ class T9PureTemplate:
         styles = cls._create_styles(wb)
 
         ws_h = wb.add_worksheet("發貨單－基本資訊0")
-        cls.write_sheet(ws_h, "發貨單", specs.SO_HEADER_NOTES, specs.SO_HEADER_FIELDS, header_rows, styles)
+        cls._write_sheet(ws_h, "發貨單", specs.SO_HEADER_NOTES, specs.SO_HEADER_FIELDS, header_rows, styles)
 
         ws_b = wb.add_worksheet("發貨單－表身明細1")
-        cls.write_sheet(ws_b, "發貨單", specs.SO_BODY_NOTES, specs.SO_BODY_FIELDS, body_rows, styles)
+        cls._write_sheet(ws_b, "發貨單", specs.SO_BODY_NOTES, specs.SO_BODY_FIELDS, body_rows, styles)  # <--- 修正這裡
 
         wb.close()
 
@@ -91,9 +92,9 @@ class T9PureTemplate:
         styles = cls._create_styles(wb)
 
         ws_h = wb.add_worksheet("採購訂單－基本資訊0")
-        cls.write_sheet(ws_h, "採購訂單", specs.PO_HEADER_NOTES, specs.PO_HEADER_FIELDS, header_rows, styles)
+        cls._write_sheet(ws_h, "採購訂單", specs.PO_HEADER_NOTES, specs.PO_HEADER_FIELDS, header_rows, styles)
 
         ws_b = wb.add_worksheet("採購訂單－明細資料1")
-        cls.write_sheet(ws_b, "採購訂單", specs.PO_BODY_NOTES, specs.PO_BODY_FIELDS, body_rows, styles)
+        cls._write_sheet(ws_b, "採購訂單", specs.PO_BODY_NOTES, specs.PO_BODY_FIELDS, body_rows, styles)
 
         wb.close()
