@@ -2,3 +2,4 @@
 __pycache__/
 *.pyc
 test_run.py
+t9_erp_exporter.egg-info
